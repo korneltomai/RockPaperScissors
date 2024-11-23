@@ -1,0 +1,31 @@
+﻿@using RockPaperScissors.Models
+@using RockPaperScissors.Models.Enums
+
+@page "/"
+
+<input type="button" @onclick="@PlayRock" value="Rock">
+<input type="button" @onclick="@PlayPaper" value="Paper">
+<input type="button" @onclick="@PlayScissors" value="Scissors">
+
+<p>@PlayerHand.ToString()</p>
+<p>@OpponentHand.ToString()</p>
+<p>@PlayerWon.ToString()</p>
+
+@code {
+    GameModel game = new GameModel(); 
+
+    Hand PlayerHand { get; set; }
+    Hand OpponentHand { get; set; }
+    bool PlayerWon { get; set; }
+
+    void PlayRock() => PlayRound(Hand.Rock);
+    void PlayPaper() => PlayRound(Hand.Paper);
+    void PlayScissors() => PlayRound(Hand.Scissors);
+
+    void PlayRound(Hand playerHand)
+    {
+        PlayerHand = playerHand;
+        OpponentHand = (Hand)new Random().Next(3);
+        PlayerWon = game.PlayRound(PlayerHand, OpponentHand);
+    }
+}
