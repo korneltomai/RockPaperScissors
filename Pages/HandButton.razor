@@ -1,0 +1,13 @@
+﻿<div class="btn">
+    <button type="button" @onclick="OnClickCallback">@ButtonText</button>
+</div>
+
+
+@code {
+    [Parameter]
+    public string ButtonText { get; set; } = string.Empty;
+
+    [Parameter]
+    public EventCallback OnClickCallback { get; set; } = default!;
+
+}

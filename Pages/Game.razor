@@ -2,13 +2,19 @@
 
 @page "/"
 
-<input type="button" @onclick="PlayRock" value="Rock">
-<input type="button" @onclick="PlayPaper" value="Paper">
-<input type="button" @onclick="PlayScissors" value="Scissors">
-
-<p>@PlayerHand.ToString()</p>
-<p>@OpponentHand.ToString()</p>
-<p>@PlayerWon.ToString()</p>
+<div class="container-fluid h-100 p-3 border">
+    <div class="container-fluid d-flex align-items-center justify-content-center h-100 border">
+        <div class="border">
+            <HandButton ButtonText="Rock" OnClickCallback="@PlayRock"/>
+        </div>
+        <div class="border">
+            <HandButton ButtonText="Paper" OnClickCallback="@PlayPaper"/>
+        </div>
+        <div class="border">
+            <HandButton ButtonText="Scissors" OnClickCallback="@PlayScissors"/>
+        </div>
+    </div>
+</div>
 
 @code {
     GameModel game = new GameModel(); 
