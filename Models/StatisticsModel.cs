@@ -1,6 +1,4 @@
-﻿using RockPaperScissors.Models.Enums;
-
-namespace RockPaperScissors.Models
+﻿namespace RockPaperScissors.Models
 {
     public class StatisticsModel
     {

@@ -1,6 +1,4 @@
-﻿using RockPaperScissors.Models.Enums;
-
-namespace RockPaperScissors.Models
+﻿namespace RockPaperScissors.Models
 {
     public class GameModel
     {
@@ -31,4 +29,6 @@ namespace RockPaperScissors.Models
             return false;
         }
     }
+
+    public enum Hand { Rock, Paper, Scissors }
 }

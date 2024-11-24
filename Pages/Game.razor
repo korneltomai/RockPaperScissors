@@ -1,11 +1,10 @@
 ﻿@using RockPaperScissors.Models
-@using RockPaperScissors.Models.Enums
 
 @page "/"
 
-<input type="button" @onclick="@PlayRock" value="Rock">
-<input type="button" @onclick="@PlayPaper" value="Paper">
-<input type="button" @onclick="@PlayScissors" value="Scissors">
+<input type="button" @onclick="PlayRock" value="Rock">
+<input type="button" @onclick="PlayPaper" value="Paper">
+<input type="button" @onclick="PlayScissors" value="Scissors">
 
 <p>@PlayerHand.ToString()</p>
 <p>@OpponentHand.ToString()</p>
