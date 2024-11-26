@@ -1,0 +1,35 @@
+﻿.top-row {
+    height: 3.5rem;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.page-title {
+    font-size: 1.5em;
+    color: white;
+}
+
+.statistics-toggler {
+    background-color: rgba(255, 255, 255, 0.1);
+    font-size: 1.5em;
+}
+
+.statistics-container {
+    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    color: white;
+}
+
+@media (min-width: 641px) {
+    .statistics-toggler {
+        display: none;
+    }
+
+    .statistics-container {
+        background-image: none;
+        width: 300px;
+    }
+
+    .collapse {
+        /* Never collapse the sidebar for wide screens */
+        display: block;
+    }
+}

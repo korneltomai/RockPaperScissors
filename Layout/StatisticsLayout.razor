@@ -1,0 +1,31 @@
+﻿<div class="top-row ps-3">
+    <div class="container-fluid h-100 align-items-center d-flex justify-content-between">
+        <span class="page-title">Rock Paper Scissors</span>
+        <button title="Statistics" class="statistics-toggler h-75" @onclick="ToggleStatistics">
+            <i class="fa-solid fa-bars" style="color: #ffffff;"></i>
+        </button>
+    </div>
+</div>
+
+<div class="@StatisticsCssClass statistics-container container-fluid position-absolute p-3">
+    <div class="container-fluid ">
+        <p>ASD</p>
+        <p>ASD</p>
+        <p>ASD</p>
+
+        <p>ASD</p>
+        <p>ASD</p>
+        <p>ASD</p>
+    </div>
+</div>
+
+@code {
+    private bool collapseStatistics = true;
+
+    private string? StatisticsCssClass => collapseStatistics ? "collapse" : null;
+
+    private void ToggleStatistics()
+    {
+        collapseStatistics = !collapseStatistics;
+    }
+}
