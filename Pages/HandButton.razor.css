@@ -1,0 +1,21 @@
+﻿button {
+    height: 100px;
+    width: 100px;
+    border: 2px solid black;
+}
+
+@media (min-width: 800px) {
+    button {
+        height: 150px;
+        width: 150px;
+        font-size: 1.5em;
+    }
+}
+
+@media (min-width: 1000px) {
+    button {
+        height: 200px;
+        width: 200px;
+        font-size: 2.0em;
+    }
+}
