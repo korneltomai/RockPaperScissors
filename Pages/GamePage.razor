@@ -1,0 +1,33 @@
+﻿@page "/"
+@using RockPaperScissors.Models
+@using RockPaperScissors.Services
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject GameStateService gameState
+
+
+<div class="container-fluid d-flex align-items-center justify-content-center h-100 p-0">
+    <HandButton ButtonText="@gameState.RockName" OnClickCallback="@PlayRock" />
+    <HandButton ButtonText="@gameState.PaperName" OnClickCallback="@PlayPaper" />
+    <HandButton ButtonText="@gameState.ScissorsName" OnClickCallback="@PlayScissors" />
+</div>
+
+@code {
+
+    GameModel Game { get; set; } = default!;
+    Outcome GameOutcome { get; set; }
+
+    void PlayRock() => PlayRound(Hand.Rock);
+    void PlayPaper() => PlayRound(Hand.Paper);
+    void PlayScissors() => PlayRound(Hand.Scissors);
+
+    async void PlayRound(Hand playerHand)
+    {
+        GameOutcome = await Game.PlayRound(playerHand, (Hand)new Random().Next(3));
+    }
+
+    protected override void OnInitialized()
+    {
+        Game = new GameModel(localStorage, gameState);
+        gameState.OnChange.Add(StateHasChanged);
+    }
+}

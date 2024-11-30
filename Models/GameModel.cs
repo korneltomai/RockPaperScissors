@@ -1,34 +1,63 @@
-﻿namespace RockPaperScissors.Models
+﻿using Blazored.LocalStorage;
+using RockPaperScissors.Services;
+
+namespace RockPaperScissors.Models
 {
     public class GameModel
     {
-        public StatisticsModel Statistics { get; set; }
+        private readonly ILocalStorageService _localStorage;
+        private readonly GameStateService _gameState;
 
-        public GameModel()
+        public GameModel(ILocalStorageService localStorage, GameStateService statistics)
         {
-            Statistics = GetStatistics();
+            _localStorage = localStorage;
+            _gameState = statistics;
         }
 
-        public bool PlayRound(Hand playerHand, Hand oppoentHand)
+        public async Task<Outcome> PlayRound(Hand playerHand, Hand oppoentHand)
         {
-            bool PlayerWon = DetermineWin(playerHand, oppoentHand);
-            return PlayerWon;
+            Outcome outcome = DetermineWin(playerHand, oppoentHand);
+            await UpdateStatistics(outcome);
+            await _gameState.UpdateStatistics();
+
+            return outcome;
         }
 
-        // TODO: Get statistics from local storage, if available.
-        private StatisticsModel GetStatistics()
+        private Outcome DetermineWin(Hand playerHand, Hand oppoentHand)
         {
-            return new StatisticsModel();
+            if (playerHand == Hand.Rock && oppoentHand == Hand.Scissors) 
+                return Outcome.Win;
+            if (playerHand == Hand.Paper && oppoentHand == Hand.Rock) 
+                return Outcome.Win;
+            if (playerHand == Hand.Scissors && oppoentHand == Hand.Paper) 
+                return Outcome.Win;
+
+            if (playerHand == oppoentHand) 
+                return Outcome.Draw;
+
+            return Outcome.Loss;
         }
 
-        private bool DetermineWin(Hand playerHand, Hand oppoentHand)
+        private async Task UpdateStatistics(Outcome outcome)
         {
-            if (playerHand == Hand.Rock && oppoentHand == Hand.Scissors) return true;
-            if (playerHand == Hand.Paper && oppoentHand == Hand.Rock) return true;
-            if (playerHand == Hand.Scissors && oppoentHand == Hand.Paper) return true;
-            return false;
+            switch (outcome)
+            {
+                case Outcome.Win:
+                    int wins = await _localStorage.ContainKeyAsync("wins") ? await _localStorage.GetItemAsync<int>("wins") : default;
+                    await _localStorage.SetItemAsync<int>("wins", ++wins);
+                    break;
+                case Outcome.Draw:
+                    int draws = await _localStorage.ContainKeyAsync("draws") ? await _localStorage.GetItemAsync<int>("draws") : default;
+                    await _localStorage.SetItemAsync<int>("draws", ++draws);
+                    break;
+                case Outcome.Loss:
+                    int losses = await _localStorage.ContainKeyAsync("losses") ? await _localStorage.GetItemAsync<int>("losses") : default;
+                    await _localStorage.SetItemAsync<int>("losses", ++losses);
+                    break;
+            }
         }
     }
 
     public enum Hand { Rock, Paper, Scissors }
+    public enum Outcome { Win, Draw, Loss }
 }

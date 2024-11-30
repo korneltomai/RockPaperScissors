@@ -1,0 +1,74 @@
+﻿@using RockPaperScissors.Services
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject GameStateService gameState
+
+<div class="top-row ps-3">
+    <div class="container-fluid h-100 align-items-center d-flex justify-content-between">
+        <span class="page-title">Rock Paper Scissors</span>
+        <button title="Statistics" class="statistics-toggler h-75" @onclick="ToggleStatistics">
+            <i class="fa-solid fa-bars" style="color: #ffffff;"></i>
+        </button>
+    </div>
+</div>
+
+<div class="@StatisticsCssClass statistics-container container-fluid position-absolute p-3">
+    <div class="container-fluid statistics">
+        <article class="container">
+            <span class="row">@($"{gameState.GamesPlayed} games played")</span>
+            <span class="row mb-3">@($"{gameState.WinRate}% won")</span>
+
+            <span class="row">@($"{gameState.Wins} wins")</span>
+            <span class="row">@($"{gameState.Draws} draws")</span>
+            <span class="row mb-3">@($"{gameState.Losses} losses")</span>
+        </article>
+        <article class="container">
+            <label class="mb-2">
+                <span class="row">Rock:</span>
+                <input type="text" value="@gameState.RockName" class="row" @oninput="OnRockNameChanged" />
+            </label>
+            <label class="mb-2">
+                <span class="row">Paper:</span>
+                <input type="text" value="@gameState.PaperName" class="row" @oninput="OnPaperNameChanged" />
+            </label>
+            <label class="mb-2">
+                <span class="row">Scissors:</span>
+                <input type="text" value="@gameState.ScissorsName" class="row" @oninput="OnScissorsNameChanged" />
+            </label>
+        </article>
+    </div>
+</div>
+
+@code {
+    private bool collapseStatistics = true;
+
+    private string? StatisticsCssClass => collapseStatistics ? "collapse" : null;
+
+    private void ToggleStatistics()
+    {
+        collapseStatistics = !collapseStatistics;
+    }
+
+    private async void OnRockNameChanged(ChangeEventArgs e)
+    {
+        await localStorage.SetItemAsync<string>("rockName", e.Value?.ToString() ?? "Rock");
+        await gameState.UpdateNames();
+    }
+
+    private async void OnPaperNameChanged(ChangeEventArgs e)
+    {
+        await localStorage.SetItemAsync<string>("paperName", e.Value?.ToString() ?? "Paper");
+        await gameState.UpdateNames();
+    }
+    private async void OnScissorsNameChanged(ChangeEventArgs e)
+    {
+        await localStorage.SetItemAsync<string>("scissorsName", e.Value?.ToString() ?? "Scissors");
+        await gameState.UpdateNames();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        gameState.OnChange.Add(StateHasChanged);
+        await gameState.UpdateStatistics();
+        await gameState.UpdateNames();
+    }
+}
