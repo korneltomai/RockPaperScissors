@@ -29,15 +29,15 @@
         <div class="d-grid gap-2">
             <label class="container mb-2">
                 <span class ="row">Rock:</span>
-                <input type="text" value="@gameState.RockName" class="row" @oninput="OnRockNameChanged" />
+                <input type="text" value="@gameState.RockName" maxlength="10" class="row" @oninput="OnRockNameChanged" />
             </label>
             <label class="container mb-2">
                 <span class="row">Paper:</span>
-                <input type="text" value="@gameState.PaperName" class="row" @oninput="OnPaperNameChanged" />
+                <input type="text" value="@gameState.PaperName" maxlength="10" class="row" @oninput="OnPaperNameChanged" />
             </label>
             <label class="container mb-2">
                 <span class="row">Scissors:</span>
-                <input type="text" value="@gameState.ScissorsName" class="row" @oninput="OnScissorsNameChanged" />
+                <input type="text" value="@gameState.ScissorsName" maxlength="10" class="row" @oninput="OnScissorsNameChanged" />
             </label>
         </div>
         <div class="d-grid gap-2 mt-5">
@@ -91,10 +91,18 @@
     {
         try
         {
-            List<string> words = (await Http.GetFromJsonAsync<List<string>>(Configuration["RandomWordApiBaseUrl"] + "random/noun?count=3"))!;
-            await localStorage.SetItemAsync<string>("rockName", words[0]);
-            await localStorage.SetItemAsync<string>("paperName", words[1]);
-            await localStorage.SetItemAsync<string>("scissorsName", words[2]);
+            string[] randomWords = new string[3];
+            for (int i = 0; i < 3; i++)
+                while (randomWords[i] == null || randomWords[i].Length > 10)
+                {
+                    var result = (await Http.GetFromJsonAsync<string[]>(Configuration["RandomWordApiBaseUrl"] + "random/noun"))!;
+                    randomWords[i] = result[0];
+                }
+            
+
+            await localStorage.SetItemAsync<string>("rockName", randomWords[0]);
+            await localStorage.SetItemAsync<string>("paperName", randomWords[1]);
+            await localStorage.SetItemAsync<string>("scissorsName", randomWords[2]);
             await gameState.UpdateNames();
         }
         catch (Exception ex)
