@@ -35,7 +35,7 @@
 
     GameModel Game { get; set; } = default!;
     Hand OpponentHand { get; set; }
-    Outcome GameOutcome { get; set; } = string.Empty;
+    Outcome GameOutcome { get; set; }
 
     string OppoenentHandText => OpponentHand switch
     {
