@@ -9,8 +9,8 @@
         <div class="container-fluid d-flex align-items-center justify-content-center h-100 p-0">
             <div>
                 <p class="fs-2 text-center">Opponent</p>
-                <div class="opponentHand row d-flex align-items-center justify-content-center bg-danger mw-25 mh-25 m-1 border border-dark rounded">
-                    <span class="text-light">@OpponentHand</span>
+                <div class="opponentHand d-flex align-items-center justify-content-center bg-danger mw-25 mh-25 m-1 border border-dark rounded">
+                    <span class="text-light">@OppoenentHandText</span>
                 </div>
             </div>
         </div>
@@ -34,8 +34,16 @@
 @code {
 
     GameModel Game { get; set; } = default!;
-    string OpponentHand { get; set; } = string.Empty;
-    string GameOutcome { get; set; } = string.Empty;
+    Hand OpponentHand { get; set; }
+    Outcome GameOutcome { get; set; } = string.Empty;
+
+    string OppoenentHandText => OpponentHand switch
+    {
+        Hand.Rock => gameState.RockName,
+        Hand.Paper => gameState.PaperName,
+        Hand.Scissors => gameState.ScissorsName,
+        _ => OpponentHand.ToString()
+    };
 
     void PlayRock() => PlayRound(Hand.Rock);
     void PlayPaper() => PlayRound(Hand.Paper);
@@ -43,9 +51,8 @@
 
     async void PlayRound(Hand playerHand)
     {
-        Hand randomHand = (Hand)new Random().Next(3);
-        OpponentHand = randomHand.ToString();
-        GameOutcome = (await Game.PlayRound(playerHand, randomHand)).ToString();
+        OpponentHand = (Hand)new Random().Next(3);
+        GameOutcome = await Game.PlayRound(playerHand, OpponentHand);
         StateHasChanged();
     }
 

@@ -96,9 +96,15 @@
                 while (randomWords[i] == null || randomWords[i].Length > 10)
                 {
                     var result = (await Http.GetFromJsonAsync<string[]>(Configuration["RandomWordApiBaseUrl"] + "random/noun"))!;
-                    randomWords[i] = result[0];
+                    string word = result[0];
+
+                    // Makes the first letter of the word uppercase to look better when displaying
+                    randomWords[i] = word switch
+                    {
+                        null => throw new ArgumentNullException(nameof(word)),
+                        _ => string.Concat(word[0].ToString().ToUpper(), word.AsSpan(1))
+                    };
                 }
-            
 
             await localStorage.SetItemAsync<string>("rockName", randomWords[0]);
             await localStorage.SetItemAsync<string>("paperName", randomWords[1]);
