@@ -13,28 +13,31 @@
 
 <div class="@MenuCssClass menu-container container-fluid position-absolute p-3">
     <div class="container-fluid menu">
-        <article class="container">
+        <div class="container">
             <span class="row">@($"{gameState.GamesPlayed} games played")</span>
             <span class="row mb-3">@($"{gameState.WinRate}% won")</span>
 
             <span class="row">@($"{gameState.Wins} wins")</span>
             <span class="row">@($"{gameState.Draws} draws")</span>
             <span class="row mb-3">@($"{gameState.Losses} losses")</span>
-        </article>
-        <article class="container">
-            <label class="row mb-2">
-                <span class="row">Rock:</span>
+        </div>
+        <div class="d-grid gap-2">
+            <label class="container mb-2">
+                <span class ="row">Rock:</span>
                 <input type="text" value="@gameState.RockName" class="row" @oninput="OnRockNameChanged" />
             </label>
-            <label class="row mb-2">
+            <label class="container mb-2">
                 <span class="row">Paper:</span>
                 <input type="text" value="@gameState.PaperName" class="row" @oninput="OnPaperNameChanged" />
             </label>
-            <label class="row mb-2">
+            <label class="container mb-2">
                 <span class="row">Scissors:</span>
                 <input type="text" value="@gameState.ScissorsName" class="row" @oninput="OnScissorsNameChanged" />
             </label>
-        </article>
+        </div>
+        <div class="d-grid gap-2 mt-5">
+            <button type="button" class="btn btn-light" @onclick="ResetGameState">Reset</button>
+        </div>
     </div>
 </div>
 
@@ -62,6 +65,19 @@
     private async void OnScissorsNameChanged(ChangeEventArgs e)
     {
         await localStorage.SetItemAsync<string>("scissorsName", e.Value?.ToString() ?? "Scissors");
+        await gameState.UpdateNames();
+    }
+
+    private async void ResetGameState()
+    {
+        await localStorage.SetItemAsync<int>("wins", 0);
+        await localStorage.SetItemAsync<int>("draws", 0);
+        await localStorage.SetItemAsync<int>("losses", 0);
+        await gameState.UpdateStatistics();
+
+        await localStorage.SetItemAsync<string>("rockName", "Rock");
+        await localStorage.SetItemAsync<string>("paperName", "Paper");
+        await localStorage.SetItemAsync<string>("scissorsName", "Scissors");
         await gameState.UpdateNames();
     }
 
