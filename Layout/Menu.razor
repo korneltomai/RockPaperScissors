@@ -5,14 +5,14 @@
 <div class="top-row ps-3">
     <div class="container-fluid h-100 align-items-center d-flex justify-content-between">
         <span class="page-title">Rock Paper Scissors</span>
-        <button title="Statistics" class="statistics-toggler h-75" @onclick="ToggleStatistics">
+        <button title="Menu" class="menu-toggler h-75" @onclick="ToggleMenu">
             <i class="fa-solid fa-bars" style="color: #ffffff;"></i>
         </button>
     </div>
 </div>
 
-<div class="@StatisticsCssClass statistics-container container-fluid position-absolute p-3">
-    <div class="container-fluid statistics">
+<div class="@MenuCssClass menu-container container-fluid position-absolute p-3">
+    <div class="container-fluid menu">
         <article class="container">
             <span class="row">@($"{gameState.GamesPlayed} games played")</span>
             <span class="row mb-3">@($"{gameState.WinRate}% won")</span>
@@ -39,13 +39,13 @@
 </div>
 
 @code {
-    private bool collapseStatistics = true;
+    private bool collapseMenu = true;
 
-    private string? StatisticsCssClass => collapseStatistics ? "collapse" : null;
+    private string? MenuCssClass => collapseMenu ? "collapse" : null;
 
-    private void ToggleStatistics()
+    private void ToggleMenu()
     {
-        collapseStatistics = !collapseStatistics;
+        collapseMenu = !collapseMenu;
     }
 
     private async void OnRockNameChanged(ChangeEventArgs e)

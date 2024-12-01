@@ -8,26 +8,26 @@
     color: white;
 }
 
-.statistics-toggler {
+.menu-toggler {
     background-color: rgba(255, 255, 255, 0.1);
     font-size: 1.5em;
 }
 
-.statistics-container {
+.menu-container {
     background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
     color: white;
 }
 
-.statistics {
+.menu {
     font-size: 1.2em;
 }
 
 @media (min-width: 641px) {
-    .statistics-toggler {
+    .menu-toggler {
         display: none;
     }
 
-    .statistics-container {
+    .menu-container {
         background-image: none;
         width: 300px;
     }
