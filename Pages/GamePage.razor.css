@@ -1,1 +1,46 @@
-﻿
+﻿.opponentHand {
+    height: 90px;
+    width: 90px;
+    font-size: 0.80em;
+}
+
+@media (min-width: 400px) {
+    .opponentHand {
+        height: 100px;
+        width: 100px;
+        font-size: 0.85em;
+    }
+}
+
+
+@media (min-width: 450px) {
+    .opponentHand {
+        height: 125px;
+        width: 125px;
+        font-size: 1em;
+    }
+}
+
+@media (min-width: 550px) {
+    .opponentHand {
+        height: 150px;
+        width: 150px;
+        font-size: 1.25em;
+    }
+}
+
+@media (min-width: 900px) {
+    .opponentHand {
+        height: 175px;
+        width: 175px;
+        font-size: 1.5em;
+    }
+}
+
+@media (min-width: 1000px) {
+    .opponentHand {
+        height: 200px;
+        width: 200px;
+        font-size: 2.0em;
+    }
+}

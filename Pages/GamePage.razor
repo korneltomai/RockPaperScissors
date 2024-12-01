@@ -4,17 +4,28 @@
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject GameStateService gameState
 
-
-<div class="container-fluid d-flex align-items-center justify-content-center h-100 p-0">
-    <HandButton ButtonText="@gameState.RockName" OnClickCallback="@PlayRock" />
-    <HandButton ButtonText="@gameState.PaperName" OnClickCallback="@PlayPaper" />
-    <HandButton ButtonText="@gameState.ScissorsName" OnClickCallback="@PlayScissors" />
+<div class="d-grid h-100">
+    <div class="container-fluid d-flex align-items-center justify-content-center h-100 w-100 p-0">
+        <div class="opponentHand d-flex align-items-center justify-content-center bg-danger mw-25 mh-25 m-1 border border-dark rounded">
+            <span class="text-light">@OpponentHand</span>
+        </div>
+    </div>
+    <div class="container-fluid d-flex align-items-center justify-content-center h-100 w-100 p-0">
+        <p class="fs-1">@($"{GameOutcome.ToString()}")</p>
+    </div>
+    <div class="container-fluid d-flex align-items-center justify-content-center h-100 w-100 p-0">
+        <HandButton ButtonText="@gameState.RockName" OnClickCallback="@PlayRock" />
+        <HandButton ButtonText="@gameState.PaperName" OnClickCallback="@PlayPaper" />
+        <HandButton ButtonText="@gameState.ScissorsName" OnClickCallback="@PlayScissors" />
+    </div>
 </div>
+
 
 @code {
 
     GameModel Game { get; set; } = default!;
-    Outcome GameOutcome { get; set; }
+    string OpponentHand { get; set; } = string.Empty;
+    string GameOutcome { get; set; } = string.Empty;
 
     void PlayRock() => PlayRound(Hand.Rock);
     void PlayPaper() => PlayRound(Hand.Paper);
@@ -22,7 +33,10 @@
 
     async void PlayRound(Hand playerHand)
     {
-        GameOutcome = await Game.PlayRound(playerHand, (Hand)new Random().Next(3));
+        Hand randomHand = (Hand)new Random().Next(3);
+        OpponentHand = randomHand.ToString();
+        GameOutcome = (await Game.PlayRound(playerHand, randomHand)).ToString();
+        StateHasChanged();
     }
 
     protected override void OnInitialized()
