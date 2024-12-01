@@ -22,7 +22,7 @@
     font-size: 1.2em;
 }
 
-@media (min-width: 641px) {
+@media (min-width: 830px) {
     .menu-toggler {
         display: none;
     }

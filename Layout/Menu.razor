@@ -22,15 +22,15 @@
             <span class="row mb-3">@($"{gameState.Losses} losses")</span>
         </article>
         <article class="container">
-            <label class="mb-2">
+            <label class="row mb-2">
                 <span class="row">Rock:</span>
                 <input type="text" value="@gameState.RockName" class="row" @oninput="OnRockNameChanged" />
             </label>
-            <label class="mb-2">
+            <label class="row mb-2">
                 <span class="row">Paper:</span>
                 <input type="text" value="@gameState.PaperName" class="row" @oninput="OnPaperNameChanged" />
             </label>
-            <label class="mb-2">
+            <label class="row mb-2">
                 <span class="row">Scissors:</span>
                 <input type="text" value="@gameState.ScissorsName" class="row" @oninput="OnScissorsNameChanged" />
             </label>
