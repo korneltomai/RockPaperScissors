@@ -3,6 +3,7 @@
 @using RockPaperScissors.Services
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject GameStateService gameState
+@inject NameService nameService
 
 <div class="d-grid h-100">
     <div>
@@ -22,9 +23,9 @@
         <div>
             <p class="fs-2 text-center">Player</p>
             <div class="row">
-                <HandButton ButtonText="@gameState.RockName" OnClickCallback="@PlayRock" />
-                <HandButton ButtonText="@gameState.PaperName" OnClickCallback="@PlayPaper" />
-                <HandButton ButtonText="@gameState.ScissorsName" OnClickCallback="@PlayScissors" />
+                <HandButton ButtonText="@nameService.RockName" OnClickCallback="@PlayRock" />
+                <HandButton ButtonText="@nameService.PaperName" OnClickCallback="@PlayPaper" />
+                <HandButton ButtonText="@nameService.ScissorsName" OnClickCallback="@PlayScissors" />
             </div>
         </div>
     </div>
@@ -39,9 +40,9 @@
 
     string OppoenentHandText => OpponentHand switch
     {
-        Hand.Rock => gameState.RockName,
-        Hand.Paper => gameState.PaperName,
-        Hand.Scissors => gameState.ScissorsName,
+        Hand.Rock => nameService.RockName,
+        Hand.Paper => nameService.PaperName,
+        Hand.Scissors => nameService.ScissorsName,
         _ => OpponentHand.ToString()
     };
 
@@ -60,5 +61,6 @@
     {
         Game = new GameModel(localStorage, gameState);
         gameState.OnChange.Add(StateHasChanged);
+        nameService.OnChange.Add(StateHasChanged);
     }
 }

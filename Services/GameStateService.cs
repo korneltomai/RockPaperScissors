@@ -1,4 +1,5 @@
 ﻿using Blazored.LocalStorage;
+using RockPaperScissors.Models;
 
 namespace RockPaperScissors.Services
 {
@@ -11,20 +12,38 @@ namespace RockPaperScissors.Services
         public int Draws { get; set; }
         public int GamesPlayed => Wins + Losses + Draws;
         public int WinRate => GamesPlayed > 0 ? (int)(Convert.ToDouble(Wins) / Convert.ToDouble(GamesPlayed) * 100) : 0;
-        public string RockName { get; set; }
-        public string PaperName { get; set; }
-        public string ScissorsName { get; set; }
 
         public GameStateService(ILocalStorageService localStorage)
         {
             _localStorage = localStorage;
             OnChange = new List<Action>();
-            RockName = string.Empty;
-            PaperName = string.Empty;
-            ScissorsName = string.Empty;
         }
 
-        public async Task UpdateStatistics()
+        public async Task UpdateStatistics(Outcome outcome)
+        {
+            switch (outcome)
+            {
+                case Outcome.Win:
+                    int wins = await _localStorage.ContainKeyAsync("wins") ? await _localStorage.GetItemAsync<int>("wins") : default;
+                    Wins++;
+                    await _localStorage.SetItemAsync<int>("wins", ++wins);
+                    break;
+                case Outcome.Draw:
+                    int draws = await _localStorage.ContainKeyAsync("draws") ? await _localStorage.GetItemAsync<int>("draws") : default;
+                    Draws++;
+                    await _localStorage.SetItemAsync<int>("draws", ++draws);
+                    break;
+                case Outcome.Loss:
+                    int losses = await _localStorage.ContainKeyAsync("losses") ? await _localStorage.GetItemAsync<int>("losses") : default;
+                    Losses++;
+                    await _localStorage.SetItemAsync<int>("losses", ++losses);
+                    break;
+            }
+
+            NotifyStateChanged();
+        }
+
+        public async Task LoadStatistics()
         {
             Wins = await _localStorage.GetItemAsync<int>("wins");
             Draws = await _localStorage.GetItemAsync<int>("draws");
@@ -33,11 +52,15 @@ namespace RockPaperScissors.Services
             NotifyStateChanged();
         }
 
-        public async Task UpdateNames()
+        public async Task ResetStatistics()
         {
-            RockName = await _localStorage.GetItemAsync<string>("rockName") ?? "Rock";
-            PaperName = await _localStorage.GetItemAsync<string>("paperName") ?? "Paper";
-            ScissorsName = await _localStorage.GetItemAsync<string>("scissorsName") ?? "Scissors";
+            Wins = 0;
+            Draws = 0;
+            Losses = 0;
+
+            await _localStorage.SetItemAsync<int>("wins", 0);
+            await _localStorage.SetItemAsync<int>("draws", 0);
+            await _localStorage.SetItemAsync<int>("losses", 0);
 
             NotifyStateChanged();
         }

@@ -1,9 +1,11 @@
-﻿@using RockPaperScissors.Services
+﻿@using RockPaperScissors.Models
+@using RockPaperScissors.Services
 @using Microsoft.Extensions.Configuration
 @inject IConfiguration Configuration
 @inject HttpClient Http
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject GameStateService gameState
+@inject NameService nameService
 
 
 
@@ -29,20 +31,20 @@
         <div class="d-grid gap-2">
             <label class="container mb-2">
                 <span class ="row">Rock:</span>
-                <input type="text" value="@gameState.RockName" maxlength="10" class="row" @oninput="OnRockNameChanged" />
+                <input type="text" value="@nameService.RockName" maxlength="10" class="row" @oninput="OnRockNameChanged" />
             </label>
             <label class="container mb-2">
                 <span class="row">Paper:</span>
-                <input type="text" value="@gameState.PaperName" maxlength="10" class="row" @oninput="OnPaperNameChanged" />
+                <input type="text" value="@nameService.PaperName" maxlength="10" class="row" @oninput="OnPaperNameChanged" />
             </label>
             <label class="container mb-2">
                 <span class="row">Scissors:</span>
-                <input type="text" value="@gameState.ScissorsName" maxlength="10" class="row" @oninput="OnScissorsNameChanged" />
+                <input type="text" value="@nameService.ScissorsName" maxlength="10" class="row" @oninput="OnScissorsNameChanged" />
             </label>
         </div>
         <div class="d-grid gap-2 mt-5">
-            <button type="button" class="btn btn-light border border-dark" @onclick="GetRandomNames">Get random names</button>
-            <button type="button" class="btn btn-light border border-dark" @onclick="ResetGameState">Reset</button>
+            <button type="button" class="btn btn-light border border-dark" @onclick="nameService.GetRandomNames">Get random names</button>
+            <button type="button" class="btn btn-light border border-dark" @onclick="Reset">Reset</button>
         </div>
     </div>
 </div>
@@ -57,70 +59,22 @@
         collapseMenu = !collapseMenu;
     }
 
-    private async void OnRockNameChanged(ChangeEventArgs e)
+    private async Task OnRockNameChanged(ChangeEventArgs e) => await nameService.OnNameChanged(Hand.Rock, e.Value?.ToString());
+    private async Task OnPaperNameChanged(ChangeEventArgs e) => await nameService.OnNameChanged(Hand.Paper, e.Value?.ToString());
+    private async Task OnScissorsNameChanged(ChangeEventArgs e) => await nameService.OnNameChanged(Hand.Scissors, e.Value?.ToString());
+
+    private async Task Reset()
     {
-        await localStorage.SetItemAsync<string>("rockName", e.Value?.ToString() ?? "Rock");
-        await gameState.UpdateNames();
-    }
-
-    private async void OnPaperNameChanged(ChangeEventArgs e)
-    {
-        await localStorage.SetItemAsync<string>("paperName", e.Value?.ToString() ?? "Paper");
-        await gameState.UpdateNames();
-    }
-    private async void OnScissorsNameChanged(ChangeEventArgs e)
-    {
-        await localStorage.SetItemAsync<string>("scissorsName", e.Value?.ToString() ?? "Scissors");
-        await gameState.UpdateNames();
-    }
-
-    private async void ResetGameState()
-    {
-        await localStorage.SetItemAsync<int>("wins", 0);
-        await localStorage.SetItemAsync<int>("draws", 0);
-        await localStorage.SetItemAsync<int>("losses", 0);
-        await gameState.UpdateStatistics();
-
-        await localStorage.SetItemAsync<string>("rockName", "Rock");
-        await localStorage.SetItemAsync<string>("paperName", "Paper");
-        await localStorage.SetItemAsync<string>("scissorsName", "Scissors");
-        await gameState.UpdateNames();
-    }
-
-    private async void GetRandomNames()
-    {
-        try
-        {
-            string[] randomWords = new string[3];
-            for (int i = 0; i < 3; i++)
-                while (randomWords[i] == null || randomWords[i].Length > 10)
-                {
-                    var result = (await Http.GetFromJsonAsync<string[]>(Configuration["RandomWordApiBaseUrl"] + "random/noun"))!;
-                    string word = result[0];
-
-                    // Makes the first letter of the word uppercase to look better when displaying
-                    randomWords[i] = word switch
-                    {
-                        null => throw new ArgumentNullException(nameof(word)),
-                        _ => string.Concat(word[0].ToString().ToUpper(), word.AsSpan(1))
-                    };
-                }
-
-            await localStorage.SetItemAsync<string>("rockName", randomWords[0]);
-            await localStorage.SetItemAsync<string>("paperName", randomWords[1]);
-            await localStorage.SetItemAsync<string>("scissorsName", randomWords[2]);
-            await gameState.UpdateNames();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error fetching data: {ex.Message}");
-        }
+        await gameState.ResetStatistics();
+        await nameService.ResetNames();
     }
 
     protected override async Task OnInitializedAsync()
     {
         gameState.OnChange.Add(StateHasChanged);
-        await gameState.UpdateStatistics();
-        await gameState.UpdateNames();
+        nameService.OnChange.Add(StateHasChanged);
+
+        await gameState.LoadStatistics();
+        await nameService.LoadNames();
     }
 }
