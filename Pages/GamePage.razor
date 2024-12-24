@@ -10,22 +10,31 @@
         <div class="container-fluid d-flex align-items-center justify-content-center h-100 p-0">
             <div>
                 <p class="fs-2 text-center">Opponent</p>
-                <div class="opponentHand d-flex align-items-center justify-content-center bg-danger mw-25 mh-25 m-1 border border-dark rounded">
-                    <span class="text-light">@OppoenentHandText</span>
+                <div class="opponentHand">
+                    <div class="opponentHand-inner @AnimationClass">
+                        <div class="opponentHand-front">
+                            <div class="h-100 d-flex align-items-center justify-content-center bg-danger mw-25 mh-25 m-1 border border-dark rounded"></div>
+                        </div>
+                        <div class="opponentHand-back h-100">
+                            <div class="h-100 d-flex align-items-center justify-content-center bg-danger mw-25 mh-25 m-1 border border-dark rounded">
+                                <span class="text-light">@OppoenentHandText</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="container-fluid d-flex align-items-center justify-content-center h-100 p-0">
-        <p class="fs-1">@($"{GameOutcome.ToString()}")</p>
+        <p class="fs-1" hidden="@HiddenOutcome">@($"{GameOutcome.ToString()}")</p>
     </div>
     <div class="container-fluid d-flex align-items-center justify-content-center h-100 p-0">
         <div>
             <p class="fs-2 text-center">Player</p>
             <div class="row">
-                <HandButton ButtonText="@nameService.RockName" OnClickCallback="@PlayRock" />
-                <HandButton ButtonText="@nameService.PaperName" OnClickCallback="@PlayPaper" />
-                <HandButton ButtonText="@nameService.ScissorsName" OnClickCallback="@PlayScissors" />
+                <HandButton ButtonText="@nameService.RockName" OnClickCallback="@PlayRock" @bind-Disabled="Disabled" />
+                <HandButton ButtonText="@nameService.PaperName" OnClickCallback="@PlayPaper" @bind-Disabled="Disabled" />
+                <HandButton ButtonText="@nameService.ScissorsName" OnClickCallback="@PlayScissors" @bind-Disabled="Disabled" />
             </div>
         </div>
     </div>
@@ -37,6 +46,10 @@
     GameModel Game { get; set; } = default!;
     Hand OpponentHand { get; set; }
     Outcome GameOutcome { get; set; }
+    bool Disabled { get; set; }
+    bool HiddenOutcome { get; set; } = true;
+    string AnimationClass { get; set; } = string.Empty;
+
 
     string OppoenentHandText => OpponentHand switch
     {
@@ -46,14 +59,33 @@
         _ => OpponentHand.ToString()
     };
 
-    void PlayRock() => PlayRound(Hand.Rock);
-    void PlayPaper() => PlayRound(Hand.Paper);
-    void PlayScissors() => PlayRound(Hand.Scissors);
+    async void PlayRock() => await PlayRound(Hand.Rock);
+    async void PlayPaper() => await PlayRound(Hand.Paper);
+    async void PlayScissors() => await PlayRound(Hand.Scissors);
 
-    async void PlayRound(Hand playerHand)
+    async Task PlayRound(Hand playerHand)
     {
+        PlayAnimation();
+        await Task.Delay(2000);
         OpponentHand = (Hand)new Random().Next(3);
         GameOutcome = await Game.PlayRound(playerHand, OpponentHand);
+        StateHasChanged();
+    }
+
+    private async void PlayAnimation()
+    {
+        Disabled = true;
+        HiddenOutcome = true;
+        AnimationClass = string.Empty;
+
+        await Task.Delay(2000);
+        AnimationClass = "opponentHand-animate";
+        StateHasChanged();
+
+        await Task.Delay(2000);
+        Disabled = false;
+        HiddenOutcome = false;
+
         StateHasChanged();
     }
 

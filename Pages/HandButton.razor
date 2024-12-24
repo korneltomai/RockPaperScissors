@@ -1,8 +1,14 @@
-﻿<button type="button" class="btn btn-danger mw-25 mh-25 m-1 border border-dark" @onclick="OnClickCallback">@ButtonText</button>
+﻿<button type="button" class="btn btn-danger mw-25 mh-25 m-1 border border-dark" disabled="@Disabled" @onclick="OnClickCallback">@ButtonText</button>
 
 @code {
     [Parameter]
     public string ButtonText { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> DisabledChanged { get; set; }
 
     [Parameter]
     public EventCallback OnClickCallback { get; set; } = default!;
