@@ -59,9 +59,9 @@
         collapseMenu = !collapseMenu;
     }
 
-    private async Task OnRockNameChanged(ChangeEventArgs e) => await nameService.OnNameChanged(Hand.Rock, e.Value?.ToString());
-    private async Task OnPaperNameChanged(ChangeEventArgs e) => await nameService.OnNameChanged(Hand.Paper, e.Value?.ToString());
-    private async Task OnScissorsNameChanged(ChangeEventArgs e) => await nameService.OnNameChanged(Hand.Scissors, e.Value?.ToString());
+    private async void OnRockNameChanged(ChangeEventArgs e) => await nameService.OnNameChanged(Hand.Rock, e.Value?.ToString());
+    private async void OnPaperNameChanged(ChangeEventArgs e) => await nameService.OnNameChanged(Hand.Paper, e.Value?.ToString());
+    private async void OnScissorsNameChanged(ChangeEventArgs e) => await nameService.OnNameChanged(Hand.Scissors, e.Value?.ToString());
 
     private async Task Reset()
     {

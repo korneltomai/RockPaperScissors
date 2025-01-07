@@ -24,18 +24,18 @@ namespace RockPaperScissors.Services
             switch (outcome)
             {
                 case Outcome.Win:
-                    int wins = await _localStorage.ContainKeyAsync("wins") ? await _localStorage.GetItemAsync<int>("wins") : default;
                     Wins++;
+                    int wins = await _localStorage.ContainKeyAsync("wins") ? await _localStorage.GetItemAsync<int>("wins") : default;
                     await _localStorage.SetItemAsync<int>("wins", ++wins);
                     break;
                 case Outcome.Draw:
-                    int draws = await _localStorage.ContainKeyAsync("draws") ? await _localStorage.GetItemAsync<int>("draws") : default;
                     Draws++;
+                    int draws = await _localStorage.ContainKeyAsync("draws") ? await _localStorage.GetItemAsync<int>("draws") : default;
                     await _localStorage.SetItemAsync<int>("draws", ++draws);
                     break;
                 case Outcome.Loss:
-                    int losses = await _localStorage.ContainKeyAsync("losses") ? await _localStorage.GetItemAsync<int>("losses") : default;
                     Losses++;
+                    int losses = await _localStorage.ContainKeyAsync("losses") ? await _localStorage.GetItemAsync<int>("losses") : default;
                     await _localStorage.SetItemAsync<int>("losses", ++losses);
                     break;
             }

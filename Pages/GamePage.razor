@@ -65,27 +65,19 @@
 
     async Task PlayRound(Hand playerHand)
     {
-        PlayAnimation();
-        await Task.Delay(2000);
-        OpponentHand = (Hand)new Random().Next(3);
-        GameOutcome = await Game.PlayRound(playerHand, OpponentHand);
-        StateHasChanged();
-    }
-
-    private async void PlayAnimation()
-    {
         Disabled = true;
         HiddenOutcome = true;
         AnimationClass = string.Empty;
 
         await Task.Delay(2000);
+        OpponentHand = (Hand)new Random().Next(3);
+        GameOutcome = await Game.PlayRound(playerHand, OpponentHand);
         AnimationClass = "opponentHand-animate";
         StateHasChanged();
 
         await Task.Delay(2000);
         Disabled = false;
         HiddenOutcome = false;
-
         StateHasChanged();
     }
 
